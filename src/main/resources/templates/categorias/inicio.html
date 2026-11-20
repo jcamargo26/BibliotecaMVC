@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Categorias</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; }
+        nav a { margin-right: 15px; color: #e07a5f; text-decoration: none; font-weight: bold; }
+        input { padding: 5px; margin: 0 10px 10px 0; }
+        button { background: #e07a5f; color: white; border: none; padding: 6px 12px; cursor: pointer; }
+        table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f7dfd4; }
+    </style>
+</head>
+<body>
+<nav>
+    <a th:href="@{/livros}">Livros</a>
+    <a th:href="@{/autores}">Autores</a>
+    <a th:href="@{/categorias}">Categorias</a>
+    <a th:href="@{/usuarios}">Usuários</a>
+    <a th:href="@{/emprestimos}">Empréstimos</a>
+</nav>
+
+<h2 th:text="${indiceEdicao != null} ? 'Editar Categoria' : 'Cadastrar Categoria'"></h2>
+
+<form th:action="${indiceEdicao != null} ? @{'/categorias/editar/' + ${indiceEdicao}} : @{/categorias}" method="post">
+    <input type="hidden" name="_method" value="PUT" th:if="${indiceEdicao != null}" />
+    <input type="text" name="area" th:value="${categoria?.area}" placeholder="Área" required />
+    <input type="text" name="genero" th:value="${categoria?.genero}" placeholder="Gênero" required />
+    <input type="text" name="descricao" th:value="${categoria?.descricao}" placeholder="Descrição" required />
+    <button type="submit" th:text="${indiceEdicao != null} ? 'Atualizar' : 'Cadastrar'"></button>
+    <a th:if="${indiceEdicao != null}" th:href="@{/categorias}" style="margin-left: 10px; color: #666; text-decoration: none;">Cancelar</a>
+</form>
+
+<h2>Categorias</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Área</th>
+        <th>Gênero</th>
+        <th>Descrição</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(categorias)}">
+        <td colspan="4">Nenhuma categoria cadastrada.</td>
+    </tr>
+    <tr th:each="c, iter : ${categorias}">
+        <td th:text="${c.area}"></td>
+        <td th:text="${c.genero}"></td>
+        <td th:text="${c.descricao}"></td>
+        <td>
+            <a th:href="@{'/categorias/editar/' + ${iter.index}}" style="color: #e07a5f; margin-right: 10px; text-decoration: none; font-weight: bold;">Editar</a>
+            <form th:action="@{'/categorias/excluir/' + ${iter.index}}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" style="background:#cc5555;">Excluir</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

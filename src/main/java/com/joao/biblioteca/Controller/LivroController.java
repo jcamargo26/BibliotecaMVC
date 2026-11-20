@@ -1,4 +1,5 @@
 package com.joao.biblioteca.Controller;
+
 import com.joao.biblioteca.Model.Livro;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,18 +13,15 @@ import java.util.List;
 public class LivroController {
     private List<Livro> livros = new ArrayList<Livro>();
 
-    @GetMapping("/inicio") public String inicio(){
-        return "livros/inicio";
+    @GetMapping("/inicio")
+    public String inicio() {
+        return "redirect:/livros";
     }
+
     @GetMapping
     public String inicio(Model model) {
-        Livro livro = new Livro();
-        livro.setTitulo("Noites Brancas");
-        livro.setAutor("Fiódor Dostoiévski");
-        livro.setIsbn("100222200");
-
-        model.addAttribute("livro", livro);
-
+        model.addAttribute("livro", new Livro());
+        model.addAttribute("livros", livros);
         return "livros/inicio";
     }
 
@@ -33,9 +31,27 @@ public class LivroController {
         return "redirect:/livros";
     }
 
+    @GetMapping("/editar/{indice}")
+    public String editar(@PathVariable("indice") int indice, Model model) {
+        if (indice >= 0 && indice < livros.size()) {
+            model.addAttribute("livro", livros.get(indice));
+            model.addAttribute("indiceEdicao", indice);
+        }
+        model.addAttribute("livros", livros);
+        return "livros/inicio";
+    }
+
+    @PutMapping("/editar/{indice}")
+    public String atualizar(@PathVariable("indice") int indice, Livro livro) {
+        if (indice >= 0 && indice < livros.size()) {
+            livros.set(indice, livro);
+        }
+        return "redirect:/livros";
+    }
+
     @DeleteMapping("/excluir/{indice}")
-    public String excluir (@PathVariable("indice") int indice) {
-        if (indice>= 0 && indice < livros.size()) {
+    public String excluir(@PathVariable("indice") int indice) {
+        if (indice >= 0 && indice < livros.size()) {
             livros.remove(indice);
         }
         return "redirect:/livros";

@@ -15,24 +15,37 @@ public class CategoriaController {
 
     @GetMapping("/inicio")
     public String inicio() {
-        return "categorias/inicio";
+        return "redirect:/categorias";
     }
 
     @GetMapping
     public String inicio(Model model) {
-        Categoria categoria = new Categoria();
-        categoria.setArea("Literatura");
-        categoria.setGenero("Romance");
-        categoria.setDescricao("Obra clássica da literatura.");
-
-        model.addAttribute("categoria", categoria);
-
+        model.addAttribute("categoria", new Categoria());
+        model.addAttribute("categorias", categorias);
         return "categorias/inicio";
     }
 
     @PostMapping
     public String cadastrar(Categoria categoria) {
         categorias.add(categoria);
+        return "redirect:/categorias";
+    }
+
+    @GetMapping("/editar/{indice}")
+    public String editar(@PathVariable("indice") int indice, Model model) {
+        if (indice >= 0 && indice < categorias.size()) {
+            model.addAttribute("categoria", categorias.get(indice));
+            model.addAttribute("indiceEdicao", indice);
+        }
+        model.addAttribute("categorias", categorias);
+        return "categorias/inicio";
+    }
+
+    @PutMapping("/editar/{indice}")
+    public String atualizar(@PathVariable("indice") int indice, Categoria categoria) {
+        if (indice >= 0 && indice < categorias.size()) {
+            categorias.set(indice, categoria);
+        }
         return "redirect:/categorias";
     }
 

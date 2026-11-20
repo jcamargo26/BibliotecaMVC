@@ -15,23 +15,37 @@ public class AutorController {
 
     @GetMapping("/inicio")
     public String inicio() {
-        return "autores/inicio";
+        return "redirect:/autores";
     }
 
     @GetMapping
     public String inicio(Model model) {
-        Autor autor = new Autor();
-        autor.setNome("Fiódor Dostoiévski");
-        autor.setNacionalidade("Russo");
-
-        model.addAttribute("autor", autor);
-
+        model.addAttribute("autor", new Autor());
+        model.addAttribute("autores", autores);
         return "autores/inicio";
     }
 
     @PostMapping
     public String cadastrar(Autor autor) {
         autores.add(autor);
+        return "redirect:/autores";
+    }
+
+    @GetMapping("/editar/{indice}")
+    public String editar(@PathVariable("indice") int indice, Model model) {
+        if (indice >= 0 && indice < autores.size()) {
+            model.addAttribute("autor", autores.get(indice));
+            model.addAttribute("indiceEdicao", indice);
+        }
+        model.addAttribute("autores", autores);
+        return "autores/inicio";
+    }
+
+    @PutMapping("/editar/{indice}")
+    public String atualizar(@PathVariable("indice") int indice, Autor autor) {
+        if (indice >= 0 && indice < autores.size()) {
+            autores.set(indice, autor);
+        }
         return "redirect:/autores";
     }
 

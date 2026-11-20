@@ -16,29 +16,37 @@ public class EmprestimoController {
 
     @GetMapping("/inicio")
     public String inicio() {
-        return "emprestimos/inicio";
+        return "redirect:/emprestimos";
     }
 
     @GetMapping
     public String inicio(Model model) {
-        Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setId(1L);
-        emprestimo.setNomeLeitor("Greg");
-
-        Livro livro = new Livro();
-        livro.setTitulo("Noites Brancas");
-        livro.setAutor("Fiódor Dostoiévski");
-        livro.setIsbn("100222200");
-        emprestimo.setLivro(livro);
-
-        model.addAttribute("emprestimo", emprestimo);
-
+        model.addAttribute("emprestimo", new Emprestimo());
+        model.addAttribute("emprestimos", emprestimos);
         return "emprestimos/inicio";
     }
 
     @PostMapping
     public String cadastrar(Emprestimo emprestimo) {
         emprestimos.add(emprestimo);
+        return "redirect:/emprestimos";
+    }
+
+    @GetMapping("/editar/{indice}")
+    public String editar(@PathVariable("indice") int indice, Model model) {
+        if (indice >= 0 && indice < emprestimos.size()) {
+            model.addAttribute("emprestimo", emprestimos.get(indice));
+            model.addAttribute("indiceEdicao", indice);
+        }
+        model.addAttribute("emprestimos", emprestimos);
+        return "emprestimos/inicio";
+    }
+
+    @PutMapping("/editar/{indice}")
+    public String atualizar(@PathVariable("indice") int indice, Emprestimo emprestimo) {
+        if (indice >= 0 && indice < emprestimos.size()) {
+            emprestimos.set(indice, emprestimo);
+        }
         return "redirect:/emprestimos";
     }
 

@@ -15,25 +15,37 @@ public class UsuarioController {
 
     @GetMapping("/inicio")
     public String inicio() {
-        return "usuarios/inicio";
+        return "redirect:/usuarios";
     }
 
     @GetMapping
     public String inicio(Model model) {
-        Usuario usuario = new Usuario();
-        usuario.setId("01");
-        usuario.setNome("Greg");
-        usuario.setEmail("greg@email.com");
-        usuario.setCpf("143.726.879-02");
-
-        model.addAttribute("usuario", usuario);
-
+        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("usuarios", usuarios);
         return "usuarios/inicio";
     }
 
     @PostMapping
     public String cadastrar(Usuario usuario) {
         usuarios.add(usuario);
+        return "redirect:/usuarios";
+    }
+
+    @GetMapping("/editar/{indice}")
+    public String editar(@PathVariable("indice") int indice, Model model) {
+        if (indice >= 0 && indice < usuarios.size()) {
+            model.addAttribute("usuario", usuarios.get(indice));
+            model.addAttribute("indiceEdicao", indice);
+        }
+        model.addAttribute("usuarios", usuarios);
+        return "usuarios/inicio";
+    }
+
+    @PutMapping("/editar/{indice}")
+    public String atualizar(@PathVariable("indice") int indice, Usuario usuario) {
+        if (indice >= 0 && indice < usuarios.size()) {
+            usuarios.set(indice, usuario);
+        }
         return "redirect:/usuarios";
     }
 

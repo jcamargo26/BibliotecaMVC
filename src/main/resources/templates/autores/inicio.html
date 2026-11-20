@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Autores</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; }
+        nav a { margin-right: 15px; color: #e07a5f; text-decoration: none; font-weight: bold; }
+        input { padding: 5px; margin: 0 10px 10px 0; }
+        button { background: #e07a5f; color: white; border: none; padding: 6px 12px; cursor: pointer; }
+        table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f7dfd4; }
+    </style>
+</head>
+<body>
+<nav>
+    <a th:href="@{/livros}">Livros</a>
+    <a th:href="@{/autores}">Autores</a>
+    <a th:href="@{/categorias}">Categorias</a>
+    <a th:href="@{/usuarios}">Usuários</a>
+    <a th:href="@{/emprestimos}">Empréstimos</a>
+</nav>
+
+<h2 th:text="${indiceEdicao != null} ? 'Editar Autor' : 'Cadastrar Autor'"></h2>
+
+<form th:action="${indiceEdicao != null} ? @{'/autores/editar/' + ${indiceEdicao}} : @{/autores}" method="post">
+    <input type="hidden" name="_method" value="PUT" th:if="${indiceEdicao != null}" />
+    <input type="text" name="nome" th:value="${autor?.nome}" placeholder="Nome" required />
+    <input type="text" name="nacionalidade" th:value="${autor?.nacionalidade}" placeholder="Nacionalidade" required />
+    <button type="submit" th:text="${indiceEdicao != null} ? 'Atualizar' : 'Cadastrar'"></button>
+    <a th:if="${indiceEdicao != null}" th:href="@{/autores}" style="margin-left: 10px; color: #666; text-decoration: none;">Cancelar</a>
+</form>
+
+<h2>Autores</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Nacionalidade</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(autores)}">
+        <td colspan="3">Nenhum autor cadastrado.</td>
+    </tr>
+    <tr th:each="a, iter : ${autores}">
+        <td th:text="${a.nome}"></td>
+        <td th:text="${a.nacionalidade}"></td>
+        <td>
+            <a th:href="@{'/autores/editar/' + ${iter.index}}" style="color: #e07a5f; margin-right: 10px; text-decoration: none; font-weight: bold;">Editar</a>
+            <form th:action="@{'/autores/excluir/' + ${iter.index}}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" style="background:#cc5555;">Excluir</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
